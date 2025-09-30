@@ -146,6 +146,10 @@ function createMatrix() {
   return matrix;
 }
 
+function placeDarkModule(matrix) {
+  matrix[8][4 * 1 + 9] = 1; // Fixed dark module position
+}
+
 function padMatrix(matrix) {
   for (let row = 0; row < matrix.length; row++) {
     for (let col = 0; col < matrix[row].length; col++) {
@@ -160,6 +164,7 @@ export function buildMatrix(data, maskPattern = 0) {
   const matrix = createMatrix();
   insertPayload(matrix, data);
   placeFormatInfo(matrix, maskPattern);
+  placeDarkModule(matrix);
   applyMask(matrix, maskPattern);
   padMatrix(matrix);
   return matrix;
