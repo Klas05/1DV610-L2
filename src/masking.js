@@ -12,14 +12,33 @@ export function applyMask(matrix, maskPattern = 0) {
 
 function isDataModule(matrix, row, col) {
   if (isFinderPattern(row, col)) return false;
-
   if (isSeparator(row, col)) return false;
-
   if (row === 6 || col === 6) return false;
-
   if (isFormatInfo(row, col)) return false;
-
   return true;
+}
+
+function shouldMask(row, col, maskPattern) {
+  switch (maskPattern) {
+    case 0:
+      return (row + col) % 2 === 0;
+    case 1:
+      return row % 2 === 0;
+    case 2:
+      return col % 3 === 0;
+    case 3:
+      return (row + col) % 3 === 0;
+    case 4:
+      return (Math.floor(row / 2) + Math.floor(col / 3)) % 2 === 0;
+    case 5:
+      return ((row * col) % 2) + ((row * col) % 3) === 0;
+    case 6:
+      return (((row * col) % 2) + ((row * col) % 3)) % 2 === 0;
+    case 7:
+      return (((row + col) % 2) + ((row * col) % 3)) % 2 === 0;
+    default:
+      return false;
+  }
 }
 
 function isFinderPattern(row, col) {
@@ -56,36 +75,12 @@ function isSeparator(row, col) {
 
 function isFormatInfo(row, col) {
   // Format info around top-left
-  if (row === 8 && col <= 8) return true;
-  if (col === 8 && row <= 8) return true;
+  if (row === 8 && col <= 8 && col !== 6) return true;
+  if (col === 8 && row <= 8 && row !== 6) return true;
 
   // Format info bottom-left and top-right
   if (col === 8 && row >= 13) return true;
   if (row === 8 && col >= 13) return true;
 
   return false;
-}
-
-// Mask patterns as per QR code specification
-function shouldMask(row, col, maskPattern) {
-  switch (maskPattern) {
-    case 0:
-      return (row + col) % 2 === 0;
-    case 1:
-      return row % 2 === 0;
-    case 2:
-      return col % 3 === 0;
-    case 3:
-      return (row + col) % 3 === 0;
-    case 4:
-      return (Math.floor(row / 2) + Math.floor(col / 3)) % 2 === 0;
-    case 5:
-      return ((row * col) % 2) + ((row * col) % 3) === 0;
-    case 6:
-      return (((row * col) % 2) + ((row * col) % 3)) % 2 === 0;
-    case 7:
-      return (((row + col) % 2) + ((row * col) % 3)) % 2 === 0;
-    default:
-      return false;
-  }
 }

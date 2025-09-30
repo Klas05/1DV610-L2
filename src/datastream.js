@@ -23,12 +23,6 @@ export function buildDataCodewords(text, { mode = "byte" } = {}) {
   return convertBitsToCodewords(paddedBits);
 }
 
-function validateMode(mode) {
-  if (mode !== "byte") {
-    throw new Error("Only byte mode is supported in this implementation.");
-  }
-}
-
 function createDataBits(text) {
   const byteData = stringToBytes(text);
   const bits = [];
@@ -38,6 +32,37 @@ function createDataBits(text) {
   bits.push(...createDataSection(byteData));
 
   return bits;
+}
+
+function addPadding(dataBits) {
+  const bits = [...dataBits];
+
+  addTerminatorBits(bits);
+  addBytePadding(bits);
+
+  return bits;
+}
+
+function convertBitsToCodewords(bits) {
+  const codewords = [];
+
+  // Convert bits to codewords
+  for (let i = 0; i < bits.length; i += BITS_PER_CODEWORD) {
+    const codewordBits = bits.slice(i, i + BITS_PER_CODEWORD);
+    const codeword = parseInt(codewordBits.join(""), 2);
+    codewords.push(codeword);
+  }
+
+  // Add pad codewords if needed
+  addPadCodewords(codewords);
+
+  return codewords;
+}
+
+function validateMode(mode) {
+  if (mode !== "byte") {
+    throw new Error("Only byte mode is supported in this implementation.");
+  }
 }
 
 function createModeIndicator() {
@@ -56,15 +81,6 @@ function createDataSection(byteData) {
   return bits;
 }
 
-function addPadding(dataBits) {
-  const bits = [...dataBits];
-
-  addTerminatorBits(bits);
-  addBytePadding(bits);
-
-  return bits;
-}
-
 function addTerminatorBits(bits) {
   const terminatorLength = Math.min(
     TERMINATOR_MAX_BITS,
@@ -77,22 +93,6 @@ function addBytePadding(bits) {
   while (bits.length % BITS_PER_CODEWORD !== 0) {
     bits.push(0);
   }
-}
-
-function convertBitsToCodewords(bits) {
-  const codewords = [];
-
-  // Convert bits to codewords
-  for (let i = 0; i < bits.length; i += BITS_PER_CODEWORD) {
-    const codewordBits = bits.slice(i, i + BITS_PER_CODEWORD);
-    const codeword = parseInt(codewordBits.join(""), 2);
-    codewords.push(codeword);
-  }
-
-  // Add pad codewords if needed
-  addPadCodewords(codewords);
-
-  return codewords;
 }
 
 function addPadCodewords(codewords) {

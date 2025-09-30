@@ -24,14 +24,6 @@ export class DataPlacer {
     return this.matrix;
   }
 
-  hasMoreData() {
-    return this.dataIndex < this.data.length;
-  }
-
-  skipTimingPatternIfNeeded(col) {
-    return col === TIMING_PATTERN_COLUMN ? col - 1 : col;
-  }
-
   processColumnPair(col) {
     const traversal = new ColumnTraversal(this.isMovingUp);
 
@@ -50,6 +42,14 @@ export class DataPlacer {
     if (this.isCellAvailable(row, col) && this.hasMoreData()) {
       this.matrix[row][col] = this.data[this.dataIndex++];
     }
+  }
+
+  skipTimingPatternIfNeeded(col) {
+    return col === TIMING_PATTERN_COLUMN ? col - 1 : col;
+  }
+
+  hasMoreData() {
+    return this.dataIndex < this.data.length;
   }
 
   isCellAvailable(row, col) {
