@@ -1,7 +1,7 @@
 {
-  "name": "l2-qr-generator",
+  "name": "@klas05/qr-generator",
   "version": "1.0.0",
-  "description": "Repository for the second laboration in LNU's course 1dv610. This repository will contain a npm package for generating qr codes.",
+  "description": "A QR code generator library created for LNU course 1DV610. Generates QR code matrices with ASCII rendering support.",
   "homepage": "https://github.com/Klas05/1DV610-L2#readme",
   "bugs": {
     "url": "https://github.com/Klas05/1DV610-L2/issues"
@@ -15,6 +15,19 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "test": "node src/index.js"
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "qr",
+    "qr-code",
+    "generator",
+    "matrix",
+    "ascii",
+    "lnu",
+    "1dv610"
+  ],
+  "exports": {
+    ".": "./src/index.js",
+    "./renderer": "./src/renderer.js"
   }
 }
