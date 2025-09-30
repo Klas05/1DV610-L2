@@ -19,6 +19,20 @@ function placeFinderPattern(matrix, row, col) {
       matrix[row + r][col + c] = pattern[r][c];
     }
   }
+
+  // Place separator, 0's around the finder pattern
+  for (let r = -1; r <= 7; r++) {
+    for (let c = -1; c <= 7; c++) {
+      const rr = row + r;
+      const cc = col + c;
+
+      if (rr >= 0 && rr < size && cc >= 0 && cc < size) {
+        if (r < 0 || r > 6 || c < 0 || c > 6) {
+          matrix[rr][cc] = 0; // White border
+        }
+      }
+    }
+  }
 }
 
 function placeTimingPatterns(matrix) {
