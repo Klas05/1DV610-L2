@@ -1,14 +1,17 @@
+const BITS_PER_BYTE = 8;
+const BINARY_BASE = 2;
+
 export function stringToBytes(text) {
   const encoder = new TextEncoder();
   return encoder.encode(text);
 }
 
 export function numberToBits(num, length) {
-  return num.toString(2).padStart(length, "0").split("").map(Number);
+  return num.toString(BINARY_BASE).padStart(length, "0").split("").map(Number);
 }
 
 export function byteToBits(byte) {
-  return numberToBits(byte, 8);
+  return numberToBits(byte, BITS_PER_BYTE);
 }
 
 export function codewordsToBits(codewords) {

@@ -1,7 +1,8 @@
+import { insertPayload } from './dataPlacer.js';
+
 const MATRIX_SIZE = 21; // Version 1 QR code size
 const TIMING_PATTERN_COLUMN = 6;
 const TIMING_PATTERN_ROW = 6;
-const COLUMN_PAIR_WIDTH = 2;
 const FINDER_PATTERN_SIZE = 7;
 
 function createEmptyMatrix(size) {
@@ -78,7 +79,7 @@ function getFinderPositions() {
   ];
 }
 
-export function createMatrix() {
+function createMatrix() {
   const matrix = createEmptyMatrix(MATRIX_SIZE);
   const finderPositions = getFinderPositions();
 
@@ -89,51 +90,6 @@ export function createMatrix() {
 
   placeTimingPatterns(matrix);
   return matrix;
-}
-
-function processColumnPair(matrix, col, data, dataIndex, isMovingUp) {
-  const startRow = isMovingUp ? MATRIX_SIZE - 1 : 0;
-  const endRow = isMovingUp ? -1 : MATRIX_SIZE;
-  const step = isMovingUp ? -1 : 1;
-
-  for (let row = startRow; row !== endRow; row += step) {
-    dataIndex = tryPlacingBitPair(matrix, row, col, data, dataIndex);
-  }
-  return dataIndex;
-}
-
-function insertPayload(matrix, data) {
-  if (!data || data.length === 0) {
-    throw new Error("Data cannot be empty");
-  }
-
-  let dataIndex = 0;
-  let isMovingUp = true;
-
-  for (
-    let col = MATRIX_SIZE - 1;
-    col > 0 && dataIndex < data.length;
-    col -= COLUMN_PAIR_WIDTH
-  ) {
-    if (col === TIMING_PATTERN_COLUMN) {
-      col--; // Skip vertical timing pattern
-    }
-
-    dataIndex = processColumnPair(matrix, col, data, dataIndex, isMovingUp);
-    isMovingUp = !isMovingUp;
-  }
-
-  return matrix;
-}
-
-function tryPlacingBitPair(matrix, row, col, data, dataIndex) {
-  if (matrix[row][col] === null && dataIndex < data.length) {
-    matrix[row][col] = data[dataIndex++];
-  }
-  if (matrix[row][col - 1] === null && dataIndex < data.length) {
-    matrix[row][col - 1] = data[dataIndex++];
-  }
-  return dataIndex;
 }
 
 function padMatrix(matrix) {
@@ -147,8 +103,8 @@ function padMatrix(matrix) {
 }
 
 export function buildMatrix(data) {
-  let matrix = createMatrix();
-  matrix = insertPayload(matrix, data);
+  const matrix = createMatrix();
+  insertPayload(matrix, data);
   padMatrix(matrix);
   return matrix;
 }
