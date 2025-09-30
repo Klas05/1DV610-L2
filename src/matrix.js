@@ -23,47 +23,71 @@ function placeFinderPattern(matrix, row, col) {
 
 function placeTimingPatterns(matrix) {
   for (let i = 0; i < size; i++) {
-    matrix[i][6] = (i + 1) % 2; // Vertical timing pattern
-    matrix[6][i] = (i + 1) % 2; // Horizontal timing pattern
+    if (matrix[i][6] === null) {
+      matrix[i][6] = (i + 1) % 2;
+    }
+    if (matrix[6][i] === null) {
+      matrix[6][i] = (i + 1) % 2;
+    }
   }
 }
 
 export function createMatrix() {
   const matrix = createEmptyMatrix(size);
-  placeTimingPatterns(matrix);
   placeFinderPattern(matrix, 0, 0);
   placeFinderPattern(matrix, 0, size - 7);
   placeFinderPattern(matrix, size - 7, 0);
+  placeTimingPatterns(matrix);
   return matrix;
 }
 
 function insertPayload(matrix, data) {
   let dataIndex = 0;
   const matrixSize = matrix.length;
+  let isDirectionUp = true;
 
-  for (let row = matrixSize - 1; row >= 0 && dataIndex < data.length; row--) {
-    for (let col = matrixSize - 1; col >= 0 && dataIndex < data.length; col--) {
-      if (matrix[row][col] === null) {
-        matrix[row][col] = data[dataIndex];
-        dataIndex++;
+  let col = matrixSize - 1;
+  while (col > 0 && dataIndex < data.length) {
+    if (col === 6) col--; // Skip vertical timing pattern
+    if (isDirectionUp) {
+      for (let row = matrixSize - 1; row >= 0; row--) {
+        dataIndex = tryPlacingBitPair(matrix, row, col, data, dataIndex);
+      }
+    } else {
+      for (let row = 0; row < matrixSize; row++) {
+        dataIndex = tryPlacingBitPair(matrix, row, col, data, dataIndex);
       }
     }
-  }
-
-  // Replace any remaining nulls with 0s
-  for (let r = 0; r < matrixSize; r++) {
-    for (let c = 0; c < matrixSize; c++) {
-      if (matrix[r][c] === null) {
-        matrix[r][c] = 0;
-      }
-    }
+    isDirectionUp = !isDirectionUp;
+    col -= 2;
   }
 
   return matrix;
 }
 
-export function createMatrixWithPayload(data) {
+function tryPlacingBitPair(matrix, row, col, data, dataIndex) {
+  if (matrix[row][col] === null && dataIndex < data.length) {
+    matrix[row][col] = data[dataIndex++];
+  }
+  if (matrix[row][col - 1] === null && dataIndex < data.length) {
+    matrix[row][col - 1] = data[dataIndex++];
+  }
+  return dataIndex;
+}
+
+function padMatrix(matrix) {
+  for (let r = 0; r < matrix.length; r++) {
+    for (let c = 0; c < matrix[r].length; c++) {
+      if (matrix[r][c] === null) {
+        matrix[r][c] = 0; // Pad with 0s
+      }
+    }
+  }
+}
+
+export function buildMatrix(data) {
   let matrix = createMatrix();
   matrix = insertPayload(matrix, data);
+  padMatrix(matrix);
   return matrix;
 }
