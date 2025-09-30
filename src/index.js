@@ -1,8 +1,9 @@
 import { validateInput } from "./validator.js";
+import { encodeByte } from "./encoder.js";
 
 export function generateQRCode(text, options) {
-  // Validate input first
   validateInput(text, options);
 
-  // QR code generation logic goes here
+  const encodedData = encodeByte(text);
+  return matrix;
 }

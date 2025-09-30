@@ -1,4 +1,5 @@
 // Table for Version 1 QR capacity
+// Numeric and alphanumeric is not used at this moment, but included for future use
 const CAPACITY_V1 = {
   numeric: { L: 41, M: 34, Q: 27, H: 17 },
   alnum: { L: 25, M: 20, Q: 16, H: 10 },
