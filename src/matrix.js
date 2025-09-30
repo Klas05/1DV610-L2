@@ -1,4 +1,6 @@
 import { insertPayload } from "./dataplacer.js";
+import { placeFormatInfo } from "./formatinfo.js";
+import { applyMask } from "./masking.js";
 
 const MATRIX_SIZE = 21; // Version 1 QR code size
 const TIMING_PATTERN_COLUMN = 6;
@@ -154,9 +156,11 @@ function padMatrix(matrix) {
   }
 }
 
-export function buildMatrix(data) {
+export function buildMatrix(data, maskPattern = 0) {
   const matrix = createMatrix();
   insertPayload(matrix, data);
+  placeFormatInfo(matrix, maskPattern);
+  applyMask(matrix, maskPattern);
   padMatrix(matrix);
   return matrix;
 }
