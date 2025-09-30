@@ -7,7 +7,7 @@ Due to time limitation and complexity this package cannot generate scannable qr 
 ## Installation
 
 ```bash
-npm install 1dv610-l2-qr-generator
+npm install @klas05/qr-generator
 ```
 
 ### Development Installation
@@ -25,13 +25,44 @@ npm install
 ### Basic Example
 
 ```javascript
-import { generateQRCode } from "@klas05/qr-generator";
-import { renderASCIIMatrix } from "@klas05/qr-generator/renderer";
+import { generateQRCode, renderASCIIMatrix } from "@klas05/qr-generator";
 
 // Generate a QR code matrix
 const matrix = generateQRCode("Hello, World!", { mode: "byte" });
 
 // Render as ASCII art
+const asciiArt = renderASCIIMatrix(matrix);
+console.log(asciiArt);
+```
+
+### Advanced Usage
+
+```javascript
+import {
+  generateQRCode,
+  validateInput,
+  buildDataCodewords,
+  codewordsToBits,
+  renderASCIIMatrix,
+} from "@klas05/qr-generator";
+
+// Step-by-step QR code generation
+const text = "Hello, World!";
+const options = { mode: "byte" };
+
+// 1. Validate input
+validateInput(text, options);
+
+// 2. Build data codewords
+const codewords = buildDataCodewords(text, options);
+
+// 3. Convert to bits
+const bits = codewordsToBits(codewords);
+
+// 4. Generate final matrix (you can also use generateQRCode for steps 1-4)
+const matrix = generateQRCode(text, options);
+
+// 5. Render as ASCII
 const asciiArt = renderASCIIMatrix(matrix);
 console.log(asciiArt);
 ```
@@ -51,6 +82,38 @@ Generates a QR code matrix for the given text.
 
 **Returns:** A 21x21 matrix representing the QR code (Version 1)
 
+#### `validateInput(text, options)`
+
+Validates the input text and options for QR code generation.
+
+**Parameters:**
+
+- `text` (string): The text to validate
+- `options` (object, optional): The options to validate
+
+**Throws:** Error if input is invalid or exceeds capacity
+
+#### `buildDataCodewords(text, options)`
+
+Builds the data codewords from the input text using the specified encoding mode.
+
+**Parameters:**
+
+- `text` (string): The text to encode
+- `options` (object, optional): Encoding options
+
+**Returns:** Array of data codewords (integers)
+
+#### `codewordsToBits(codewords)`
+
+Converts an array of codewords to a bit array.
+
+**Parameters:**
+
+- `codewords` (Array): Array of codeword integers
+
+**Returns:** Array of bits (0s and 1s)
+
 #### `renderASCIIMatrix(matrix)`
 
 Renders a QR code matrix as ASCII art for console display.
@@ -65,9 +128,10 @@ Renders a QR code matrix as ASCII art for console display.
 
 - **Version 1 QR codes** (21x21 modules)
 - **Byte mode encoding** for text input
-- **Error correction levels** L (validation only)
+- **Error correction levels** L, M, Q, H (validation only)
 - **ASCII rendering** for visual output
 - **Input validation** with capacity checking
+- **Modular API** for step-by-step processing
 
 ### Limitations
 
@@ -103,7 +167,6 @@ src/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 
 ## Contributing
 

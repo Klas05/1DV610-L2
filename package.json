@@ -28,6 +28,10 @@
   ],
   "exports": {
     ".": "./src/index.js",
-    "./renderer": "./src/renderer.js"
+    "./validator": "./src/validator.js",
+    "./datastream": "./src/datastream.js",
+    "./encoder": "./src/encoder.js",
+    "./renderer": "./src/renderer.js",
+    "./matrix": "./src/matrix.js"
   }
 }
