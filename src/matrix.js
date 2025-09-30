@@ -1,4 +1,8 @@
-const size = 21; // Version 1 QR code size
+const MATRIX_SIZE = 21; // Version 1 QR code size
+const TIMING_PATTERN_COLUMN = 6;
+const TIMING_PATTERN_ROW = 6;
+const COLUMN_PAIR_WIDTH = 2;
+const FINDER_PATTERN_SIZE = 7;
 
 function createEmptyMatrix(size) {
   return Array.from({ length: size }, () => Array(size).fill(null));
@@ -14,66 +18,109 @@ function placeFinderPattern(matrix, row, col) {
     [1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1],
   ];
-  for (let r = 0; r < pattern.length; r++) {
-    for (let c = 0; c < pattern[r].length; c++) {
-      matrix[row + r][col + c] = pattern[r][c];
+
+  for (let rowOffset = 0; rowOffset < pattern.length; rowOffset++) {
+    for (
+      let colOffset = 0;
+      colOffset < pattern[rowOffset].length;
+      colOffset++
+    ) {
+      matrix[row + rowOffset][col + colOffset] = pattern[rowOffset][colOffset];
     }
   }
+}
 
-  // Place separator, 0's around the finder pattern
-  for (let r = -1; r <= 7; r++) {
-    for (let c = -1; c <= 7; c++) {
-      const rr = row + r;
-      const cc = col + c;
+function placeSeparator(matrix, row, col) {
+  for (let rowOffset = -1; rowOffset <= FINDER_PATTERN_SIZE; rowOffset++) {
+    for (let colOffset = -1; colOffset <= FINDER_PATTERN_SIZE; colOffset++) {
+      const targetRow = row + rowOffset;
+      const targetCol = col + colOffset;
 
-      if (rr >= 0 && rr < size && cc >= 0 && cc < size) {
-        if (r < 0 || r > 6 || c < 0 || c > 6) {
-          matrix[rr][cc] = 0; // White border
-        }
+      if (
+        isInBounds(targetRow, targetCol) &&
+        isOutsideFinderPattern(rowOffset, colOffset)
+      ) {
+        matrix[targetRow][targetCol] = 0;
       }
     }
   }
 }
 
+function isInBounds(row, col) {
+  return row >= 0 && row < MATRIX_SIZE && col >= 0 && col < MATRIX_SIZE;
+}
+
+function isOutsideFinderPattern(rowOffset, colOffset) {
+  return (
+    rowOffset < 0 ||
+    rowOffset > FINDER_PATTERN_SIZE - 1 ||
+    colOffset < 0 ||
+    colOffset > FINDER_PATTERN_SIZE - 1
+  );
+}
+
 function placeTimingPatterns(matrix) {
-  for (let i = 0; i < size; i++) {
-    if (matrix[i][6] === null) {
-      matrix[i][6] = (i + 1) % 2;
+  for (let i = 0; i < MATRIX_SIZE; i++) {
+    if (matrix[i][TIMING_PATTERN_COLUMN] === null) {
+      matrix[i][TIMING_PATTERN_COLUMN] = (i + 1) % 2;
     }
-    if (matrix[6][i] === null) {
-      matrix[6][i] = (i + 1) % 2;
+    if (matrix[TIMING_PATTERN_ROW][i] === null) {
+      matrix[TIMING_PATTERN_ROW][i] = (i + 1) % 2;
     }
   }
 }
 
+function getFinderPositions() {
+  return [
+    [0, 0],
+    [0, MATRIX_SIZE - FINDER_PATTERN_SIZE],
+    [MATRIX_SIZE - FINDER_PATTERN_SIZE, 0],
+  ];
+}
+
 export function createMatrix() {
-  const matrix = createEmptyMatrix(size);
-  placeFinderPattern(matrix, 0, 0);
-  placeFinderPattern(matrix, 0, size - 7);
-  placeFinderPattern(matrix, size - 7, 0);
+  const matrix = createEmptyMatrix(MATRIX_SIZE);
+  const finderPositions = getFinderPositions();
+
+  finderPositions.forEach(([row, col]) => {
+    placeFinderPattern(matrix, row, col);
+    placeSeparator(matrix, row, col);
+  });
+
   placeTimingPatterns(matrix);
   return matrix;
 }
 
-function insertPayload(matrix, data) {
-  let dataIndex = 0;
-  const matrixSize = matrix.length;
-  let isDirectionUp = true;
+function processColumnPair(matrix, col, data, dataIndex, isMovingUp) {
+  const startRow = isMovingUp ? MATRIX_SIZE - 1 : 0;
+  const endRow = isMovingUp ? -1 : MATRIX_SIZE;
+  const step = isMovingUp ? -1 : 1;
 
-  let col = matrixSize - 1;
-  while (col > 0 && dataIndex < data.length) {
-    if (col === 6) col--; // Skip vertical timing pattern
-    if (isDirectionUp) {
-      for (let row = matrixSize - 1; row >= 0; row--) {
-        dataIndex = tryPlacingBitPair(matrix, row, col, data, dataIndex);
-      }
-    } else {
-      for (let row = 0; row < matrixSize; row++) {
-        dataIndex = tryPlacingBitPair(matrix, row, col, data, dataIndex);
-      }
+  for (let row = startRow; row !== endRow; row += step) {
+    dataIndex = tryPlacingBitPair(matrix, row, col, data, dataIndex);
+  }
+  return dataIndex;
+}
+
+function insertPayload(matrix, data) {
+  if (!data || data.length === 0) {
+    throw new Error("Data cannot be empty");
+  }
+
+  let dataIndex = 0;
+  let isMovingUp = true;
+
+  for (
+    let col = MATRIX_SIZE - 1;
+    col > 0 && dataIndex < data.length;
+    col -= COLUMN_PAIR_WIDTH
+  ) {
+    if (col === TIMING_PATTERN_COLUMN) {
+      col--; // Skip vertical timing pattern
     }
-    isDirectionUp = !isDirectionUp;
-    col -= 2;
+
+    dataIndex = processColumnPair(matrix, col, data, dataIndex, isMovingUp);
+    isMovingUp = !isMovingUp;
   }
 
   return matrix;
@@ -90,10 +137,10 @@ function tryPlacingBitPair(matrix, row, col, data, dataIndex) {
 }
 
 function padMatrix(matrix) {
-  for (let r = 0; r < matrix.length; r++) {
-    for (let c = 0; c < matrix[r].length; c++) {
-      if (matrix[r][c] === null) {
-        matrix[r][c] = 0; // Pad with 0s
+  for (let row = 0; row < matrix.length; row++) {
+    for (let col = 0; col < matrix[row].length; col++) {
+      if (matrix[row][col] === null) {
+        matrix[row][col] = 0; // Pad with 0s
       }
     }
   }
