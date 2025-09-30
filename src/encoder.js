@@ -1,19 +1,20 @@
-function stringToBytes(text) {
+export function stringToBytes(text) {
   const encoder = new TextEncoder();
   return encoder.encode(text);
 }
 
-function byteToBits(byte) {
-  return byte.toString(2).padStart(8, "0").split("").map(Number);
+export function numberToBits(num, length) {
+  return num.toString(2).padStart(length, "0").split("").map(Number);
 }
 
-export function encodeByte(text) {
-  const data = stringToBytes(text);
-  const bitArray = [];
+export function byteToBits(byte) {
+  return numberToBits(byte, 8);
+}
 
-  for (const byte of data) {
-    bitArray.push(...byteToBits(byte));
+export function codewordsToBits(codewords) {
+  const bits = [];
+  for (const codeword of codewords) {
+    bits.push(...byteToBits(codeword));
   }
-
-  return bitArray;
+  return bits;
 }
