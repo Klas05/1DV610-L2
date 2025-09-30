@@ -1,4 +1,4 @@
-import { insertPayload } from './dataPlacer.js';
+import { insertPayload } from "./dataplacer.js";
 
 const MATRIX_SIZE = 21; // Version 1 QR code size
 const TIMING_PATTERN_COLUMN = 6;
@@ -79,6 +79,54 @@ function getFinderPositions() {
   ];
 }
 
+/**
+ * Reserves format information bit positions in the matrix
+ * @param {number[][]} matrix - The QR code matrix
+ */
+function reserveFormatBits(matrix) {
+  // Reserve format bits around top-left finder pattern
+  reserveTopLeftFormatBits(matrix);
+
+  // Reserve format bits around top-right and bottom-left finder patterns
+  reserveBottomLeftTopRightFormatBits(matrix);
+}
+
+/**
+ * Reserves format bits around top-left finder pattern
+ * @param {number[][]} matrix - The QR code matrix
+ */
+function reserveTopLeftFormatBits(matrix) {
+  // Horizontal format bits (row 8, columns 0-8, skipping timing pattern)
+  for (let col = 0; col <= 8; col++) {
+    if (col !== TIMING_PATTERN_COLUMN) {
+      matrix[8][col] = "F"; // 'F' for Format bit
+    }
+  }
+
+  // Vertical format bits (column 8, rows 0-8, skipping timing pattern)
+  for (let row = 0; row <= 8; row++) {
+    if (row !== TIMING_PATTERN_ROW) {
+      matrix[row][8] = "F";
+    }
+  }
+}
+
+/**
+ * Reserves format bits around bottom-left and top-right finder patterns
+ * @param {number[][]} matrix - The QR code matrix
+ */
+function reserveBottomLeftTopRightFormatBits(matrix) {
+  // Bottom-left format bits (column 8, rows 13-20)
+  for (let row = 13; row < MATRIX_SIZE; row++) {
+    matrix[row][8] = "F";
+  }
+
+  // Top-right format bits (row 8, columns 13-20)
+  for (let col = 13; col < MATRIX_SIZE; col++) {
+    matrix[8][col] = "F";
+  }
+}
+
 function createMatrix() {
   const matrix = createEmptyMatrix(MATRIX_SIZE);
   const finderPositions = getFinderPositions();
@@ -89,6 +137,10 @@ function createMatrix() {
   });
 
   placeTimingPatterns(matrix);
+
+  // Reserve format information bits
+  reserveFormatBits(matrix);
+
   return matrix;
 }
 
