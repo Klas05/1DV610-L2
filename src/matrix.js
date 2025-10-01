@@ -1,5 +1,5 @@
 import { insertPayload } from "./dataplacer.js";
-import { placeFormatInfo } from "./formatinfo.js";
+import { FormatInfoPlacer } from "./FormatInfoPlacer.js";
 import { MaskApplier } from "./MaskApplier.js";
 import {
   MATRIX_SIZE,
@@ -12,10 +12,11 @@ import {
 
 // Builds complete QR matrix: template -> data -> format -> masking
 export function buildMatrix(data, maskPattern = 0) {
+  const formatInfoPlacer = new FormatInfoPlacer();
   const maskApplier = new MaskApplier();
   const matrix = createMatrixTemplate();
   insertPayload(matrix, data);
-  placeFormatInfo(matrix, maskPattern);
+  formatInfoPlacer.place(matrix, maskPattern);
   placeDarkModule(matrix);
   maskApplier.applyMask(matrix, maskPattern);
   padMatrix(matrix);
