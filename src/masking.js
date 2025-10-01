@@ -1,3 +1,5 @@
+import { FINDER_PATTERN_POSITIONS, SEPARATOR_SIZE } from "./constants.js";
+
 // Applies mask patterns to break up visual patterns in QR data
 // Only masks data modules, never functional patterns
 
@@ -48,18 +50,12 @@ function shouldMask(row, col, maskPattern) {
 
 // Three 7x7 squares in corners
 function isFinderPattern(row, col) {
-  const patterns = [
-    [0, 0],
-    [0, 14],
-    [14, 0],
-  ];
-
-  return patterns.some(
+  return FINDER_PATTERN_POSITIONS.some(
     ([patternRow, patternCol]) =>
       row >= patternRow &&
-      row < patternRow + 7 &&
+      row < patternRow + SEPARATOR_SIZE &&
       col >= patternCol &&
-      col < patternCol + 7
+      col < patternCol + SEPARATOR_SIZE
   );
 }
 

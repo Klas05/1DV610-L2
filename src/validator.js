@@ -1,10 +1,6 @@
 // Validates input against QR Version 1 capacity limits
 
-const CAPACITY_V1 = {
-  numeric: { L: 41, M: 34, Q: 27, H: 17 },
-  alnum: { L: 25, M: 20, Q: 16, H: 10 },
-  byte: { L: 17, M: 14, Q: 11, H: 7 }, // bytes, not characters
-};
+import { CAPACITY_V1 } from "./constants.js";
 
 export function validateInput(text, { mode = "byte", ecLevel = "L" } = {}) {
   if (!text || typeof text !== "string") {
