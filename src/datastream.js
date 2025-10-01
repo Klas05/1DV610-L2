@@ -3,7 +3,7 @@
  * using byte mode and error correction level L.
  */
 
-import { stringToBytes, byteToBits, numberToBits } from "./encoder.js";
+import { stringToBytes, byteToBits, numberToBits } from "./conversionUtils.js";
 import {
   BYTE_MODE_INDICATOR,
   BYTE_MODE_BITS,

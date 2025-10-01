@@ -9,7 +9,7 @@ import {
 import { DataPlacer } from "./DataPlacer.js";
 import { FormatInfoPlacer } from "./FormatInfoPlacer.js";
 import { MaskApplier } from "./MaskApplier.js";
-import { codewordsToBits } from "./encoder.js";
+import { codewordsToBits } from "./conversionUtils.js";
 
 export class QRMatrix {
   constructor(version = 1) {
