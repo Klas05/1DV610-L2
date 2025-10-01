@@ -1,9 +1,9 @@
-// Table for Version 1 QR capacity
-// Numeric and alphanumeric is not used at this moment, but included for future use
+// Validates input against QR Version 1 capacity limits
+
 const CAPACITY_V1 = {
   numeric: { L: 41, M: 34, Q: 27, H: 17 },
   alnum: { L: 25, M: 20, Q: 16, H: 10 },
-  byte: { L: 17, M: 14, Q: 11, H: 7 },
+  byte: { L: 17, M: 14, Q: 11, H: 7 }, // bytes, not characters
 };
 
 export function validateInput(text, { mode = "byte", ecLevel = "L" } = {}) {
@@ -20,6 +20,7 @@ export function validateInput(text, { mode = "byte", ecLevel = "L" } = {}) {
   }
 
   const maxLen = CAPACITY_V1[mode][ecLevel];
+  // byte mode counts UTF-8 bytes, not characters
   const length =
     mode === "byte" ? new TextEncoder().encode(text).length : text.length;
 

@@ -1,6 +1,7 @@
-const MATRIX_SIZE = 21; // Version 1 QR code size
-const TIMING_PATTERN_COLUMN = 6;
-const COLUMN_PAIR_WIDTH = 2;
+import { MATRIX_SIZE, TIMING_PATTERN_COLUMN, COLUMN_PAIR_WIDTH } from "./constants.js";
+
+// Places data bits in QR matrix using zigzag column pattern
+// Starts from bottom-right, moves up/down in 2-column pairs
 
 export class DataPlacer {
   constructor(matrix, data) {
@@ -24,6 +25,7 @@ export class DataPlacer {
     return this.matrix;
   }
 
+  // Process right column then left column in each pair
   processColumnPair(col) {
     const traversal = new ColumnTraversal(this.isMovingUp);
 
@@ -44,6 +46,7 @@ export class DataPlacer {
     }
   }
 
+  // Skip timing pattern column during traversal
   skipTimingPatternIfNeeded(col) {
     return col === TIMING_PATTERN_COLUMN ? col - 1 : col;
   }
@@ -52,10 +55,12 @@ export class DataPlacer {
     return this.dataIndex < this.data.length;
   }
 
+  // Only place in empty cells (null = available)
   isCellAvailable(row, col) {
     return this.matrix[row][col] === null;
   }
 
+  // Alternate between up and down movement
   toggleDirection() {
     this.isMovingUp = !this.isMovingUp;
   }

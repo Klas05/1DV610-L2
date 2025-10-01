@@ -1,13 +1,13 @@
-export function renderASCIIMatrix(matrix) {
-  const paddingSize = 4;
-  const size = matrix.length;
+import { PADDING_SIZE } from "./constants.js";
 
-  const fullSize = size + 2 * paddingSize;
+export function renderASCIIMatrix(matrix) {
+  const size = matrix.length;
+  const fullSize = size + 2 * PADDING_SIZE;
   const lines = [];
 
-  for (let r = -paddingSize; r < size + paddingSize; r++) {
+  for (let r = -PADDING_SIZE; r < size + PADDING_SIZE; r++) {
     let line = "";
-    for (let c = -paddingSize; c < size + paddingSize; c++) {
+    for (let c = -PADDING_SIZE; c < size + PADDING_SIZE; c++) {
       if (r < 0 || r >= size || c < 0 || c >= size) {
         line += "  "; // Padding
       } else {

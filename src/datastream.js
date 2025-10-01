@@ -4,16 +4,20 @@
  */
 
 import { stringToBytes, byteToBits, numberToBits } from "./encoder.js";
+import {
+  BYTE_MODE_INDICATOR,
+  BYTE_MODE_BITS,
+  CHAR_COUNT_BITS,
+  MAX_DATA_CODEWORDS,
+  BITS_PER_CODEWORD,
+  TERMINATOR_MAX_BITS,
+  PAD_BYTES,
+} from "./constants.js";
 
-// Constants for QR Code Version 1, Level L
-const BYTE_MODE_INDICATOR = 4;
-const BYTE_MODE_BITS = 4;
-const CHAR_COUNT_BITS = 8;
-const MAX_DATA_CODEWORDS = 19;
-const BITS_PER_CODEWORD = 8;
+// Builds data codewords for QR Version 1 using byte mode
+// Structure: mode indicator + char count + data + terminator + padding
+
 const MAX_BITS = MAX_DATA_CODEWORDS * BITS_PER_CODEWORD;
-const TERMINATOR_MAX_BITS = 4;
-const PAD_BYTES = [0xec, 0x11];
 
 export function buildDataCodewords(text, { mode = "byte" } = {}) {
   validateMode(mode);
@@ -23,6 +27,7 @@ export function buildDataCodewords(text, { mode = "byte" } = {}) {
   return convertBitsToCodewords(paddedBits);
 }
 
+// Creates: mode(4) + count(8) + data(variable)
 function createDataBits(text) {
   const byteData = stringToBytes(text);
   const bits = [];
@@ -34,6 +39,7 @@ function createDataBits(text) {
   return bits;
 }
 
+// Adds terminator and pads to byte boundary
 function addPadding(dataBits) {
   const bits = [...dataBits];
 
@@ -43,17 +49,16 @@ function addPadding(dataBits) {
   return bits;
 }
 
+// Groups 8 bits into codewords, adds pad codewords if needed
 function convertBitsToCodewords(bits) {
   const codewords = [];
 
-  // Convert bits to codewords
   for (let i = 0; i < bits.length; i += BITS_PER_CODEWORD) {
     const codewordBits = bits.slice(i, i + BITS_PER_CODEWORD);
     const codeword = parseInt(codewordBits.join(""), 2);
     codewords.push(codeword);
   }
 
-  // Add pad codewords if needed
   addPadCodewords(codewords);
 
   return codewords;
@@ -81,6 +86,7 @@ function createDataSection(byteData) {
   return bits;
 }
 
+// Add 0000 terminator (up to 4 bits)
 function addTerminatorBits(bits) {
   const terminatorLength = Math.min(
     TERMINATOR_MAX_BITS,
@@ -89,12 +95,14 @@ function addTerminatorBits(bits) {
   bits.push(...Array(terminatorLength).fill(0));
 }
 
+// Pad with zeros to reach byte boundary
 function addBytePadding(bits) {
   while (bits.length % BITS_PER_CODEWORD !== 0) {
     bits.push(0);
   }
 }
 
+// Fill with alternating 11101100 00010001 pattern
 function addPadCodewords(codewords) {
   let padIndex = 0;
 
