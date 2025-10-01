@@ -2,7 +2,9 @@ import { validateInput } from "./validator.js";
 import { buildDataCodewords } from "./datastream.js";
 import { codewordsToBits } from "./encoder.js";
 import { buildMatrix } from "./matrix.js";
-import { renderASCIIMatrix } from "./renderer.js";
+import { QRRenderer } from "./QRRenderer.js";
+
+const qrRenderer = new QRRenderer();
 
 export function generateQRCode(text, options) {
   validateInput(text, options);
@@ -16,9 +18,8 @@ export function generateQRCode(text, options) {
 export { validateInput } from "./validator.js";
 export { buildDataCodewords } from "./datastream.js";
 export { codewordsToBits } from "./encoder.js";
-export { renderASCIIMatrix } from "./renderer.js";
 export { buildMatrix } from "./matrix.js";
 
 const matrix = generateQRCode("Hello, World!", { mode: "byte" });
-const asciiArt = renderASCIIMatrix(matrix);
+const asciiArt = qrRenderer.renderASCII(matrix);
 console.log(asciiArt);
