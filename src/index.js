@@ -1,4 +1,4 @@
-import { validateInput } from "./validator.js";
+import { InputValidator } from "./InputValidator.js";
 import { DataEncoder } from "./DataEncoder.js";
 import { QRMatrix } from "./QRMatrix.js";
 import { QRRenderer } from "./QRRenderer.js";
@@ -6,7 +6,8 @@ import { QRRenderer } from "./QRRenderer.js";
 const qrRenderer = new QRRenderer();
 
 export function generateQRCode(text, options) {
-  validateInput(text, options);
+  const inputValidator = new InputValidator();
+  inputValidator.validate(text, options);
 
   const dataEncoder = new DataEncoder();
   const codewords = dataEncoder.encode(text, options);
@@ -14,7 +15,6 @@ export function generateQRCode(text, options) {
   return matrix;
 }
 
-export { validateInput } from "./validator.js";
 export { codewordsToBits } from "./conversionUtils.js";
 
 const matrix = generateQRCode("Hello, World!", { mode: "byte" });
