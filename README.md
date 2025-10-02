@@ -9,6 +9,7 @@ Due to time limitation and complexity this package cannot generate scannable qr 
 ```bash
 npm install @klas05/qr-generator
 ```
+Not yet published as a package since it's functionality is not yet reached the desired level.
 
 ### Development Installation
 
