@@ -27,8 +27,3 @@ export function buildDataCodewords(text, options = {}) {
 
 // Export utility function
 export { codewordsToBits };
-
-// Example usage
-const generator = new QRCodeGenerator();
-const asciiArt = generator.generateASCII("Hello, World!", { mode: "byte" });
-console.log(asciiArt);
