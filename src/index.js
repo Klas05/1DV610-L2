@@ -1,22 +1,34 @@
+import { QRCodeGenerator } from "./QRCodeGenerator.js";
 import { InputValidator } from "./InputValidator.js";
 import { DataEncoder } from "./DataEncoder.js";
-import { QRMatrix } from "./QRMatrix.js";
 import { QRRenderer } from "./QRRenderer.js";
+import { codewordsToBits } from "./conversionUtils.js";
 
-const qrRenderer = new QRRenderer();
-
-export function generateQRCode(text, options) {
-  const inputValidator = new InputValidator();
-  inputValidator.validate(text, options);
-
-  const dataEncoder = new DataEncoder();
-  const codewords = dataEncoder.encode(text, options);
-  const matrix = new QRMatrix().build(codewords, options.maskPattern || 0);
-  return matrix;
+// Main high-level API (backwards compatibility)
+export function generateQRCode(text, options = {}) {
+  const generator = new QRCodeGenerator();
+  return generator.generate(text, options);
 }
 
-export { codewordsToBits } from "./conversionUtils.js";
+export function renderASCIIMatrix(matrix) {
+  const renderer = new QRRenderer();
+  return renderer.renderASCII(matrix);
+}
 
-const matrix = generateQRCode("Hello, World!", { mode: "byte" });
-const asciiArt = qrRenderer.renderASCII(matrix);
+export function validateInput(text, options = {}) {
+  const validator = new InputValidator();
+  return validator.validate(text, options);
+}
+
+export function buildDataCodewords(text, options = {}) {
+  const encoder = new DataEncoder();
+  return encoder.encode(text, options);
+}
+
+// Export utility function
+export { codewordsToBits };
+
+// Example usage
+const generator = new QRCodeGenerator();
+const asciiArt = generator.generateASCII("Hello, World!", { mode: "byte" });
 console.log(asciiArt);

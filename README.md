@@ -69,6 +69,16 @@ console.log(asciiArt);
 
 ### API Reference
 
+#### Public Functions (5 available)
+
+1. **`generateQRCode(text, options)`** - Generate QR matrix
+2. **`renderASCIIMatrix(matrix)`** - Render matrix as ASCII
+3. **`validateInput(text, options)`** - Validate input
+4. **`buildDataCodewords(text, options)`** - Build data codewords
+5. **`codewordsToBits(codewords)`** - Convert codewords to bits
+
+---
+
 #### `generateQRCode(text, options)`
 
 Generates a QR code matrix for the given text.
@@ -78,9 +88,19 @@ Generates a QR code matrix for the given text.
 - `text` (string): The text to encode in the QR code
 - `options` (object, optional):
   - `mode` (string): Encoding mode. Currently only supports `"byte"` (default: `"byte"`)
-  - `ecLevel` (string): Error correction level. Supports `"L"`, `"M"`, `"Q"`, `"H"` (default: `"L"`)
+  - `maskPattern` (number): Mask pattern (0-7) (default: `0`)
 
 **Returns:** A 21x21 matrix representing the QR code (Version 1)
+
+#### `renderASCIIMatrix(matrix)`
+
+Renders a QR code matrix as ASCII art for console display.
+
+**Parameters:**
+
+- `matrix` (Array): The QR code matrix from `generateQRCode()`
+
+**Returns:** A string containing the ASCII representation
 
 #### `validateInput(text, options)`
 
@@ -114,24 +134,15 @@ Converts an array of codewords to a bit array.
 
 **Returns:** Array of bits (0s and 1s)
 
-#### `renderASCIIMatrix(matrix)`
-
-Renders a QR code matrix as ASCII art for console display.
-
-**Parameters:**
-
-- `matrix` (Array): The QR code matrix from `generateQRCode()`
-
-**Returns:** A string containing the ASCII representation
-
 ### Supported Features
 
 - **Version 1 QR codes** (21x21 modules)
 - **Byte mode encoding** for text input
-- **Error correction levels** L, M, Q, H (validation only)
+- **Multiple mask patterns** (0-7)
 - **ASCII rendering** for visual output
 - **Input validation** with capacity checking
-- **Modular API** for step-by-step processing
+- **Functional API** with 5 public functions
+- **Modular design** for step-by-step processing
 
 ### Limitations
 
@@ -153,15 +164,18 @@ This will run the example in [src/index.js](src/index.js) and display a QR code 
 
 ```
 src/
-├── index.js          # Main entry point and example
-├── validator.js      # Input validation
-├── datastream.js     # Data codeword generation
-├── encoder.js        # Bit encoding utilities
-├── matrix.js         # QR code matrix construction
-├── dataPlacer.js     # Data placement in matrix
-├── formatinfo.js     # Format information placement
-├── masking.js        # Mask pattern application
-└── renderer.js       # ASCII rendering
+├── index.js             # Main entry point and example
+├── QRCodeGenerator.js   # Main QR code generator class
+├── InputValidator.js    # Input validation class
+├── DataEncoder.js       # Data encoding orchestrator
+├── DataStream.js        # Data stream construction
+├── QRMatrix.js          # QR matrix construction
+├── DataPlacer.js        # Data placement in matrix
+├── FormatInfoPlacer.js  # Format information placement
+├── MaskApplier.js       # Mask pattern application
+├── QRRenderer.js        # ASCII rendering
+├── conversionUtils.js   # Bit/byte conversion utilities
+└── constants.js         # Shared constants
 ```
 
 ## License
