@@ -16,11 +16,7 @@ export class DataPlacer {
   }
 
   placeAll() {
-    for (
-      let col = MATRIX_SIZE - 1;
-      col > 0 && this.#hasMoreData();
-      col -= COLUMN_PAIR_WIDTH
-    ) {
+    for (let col of this.#getColumnPairSequence()) {
       col = this.#skipTimingPatternIfNeeded(col);
       this.#processColumnPair(col);
       this.#toggleDirection();
@@ -29,7 +25,14 @@ export class DataPlacer {
     return this.matrix;
   }
 
-  // Process right column then left column in each pair
+  #getColumnPairSequence() {
+    const columns = [];
+    for (let col = MATRIX_SIZE - 1; col > 0; col -= COLUMN_PAIR_WIDTH) {
+      if (this.#hasMoreData()) columns.push(col);
+    }
+    return columns;
+  }
+
   #processColumnPair(col) {
     const traversal = new ColumnTraversal(this.isMovingUp);
 
@@ -40,8 +43,8 @@ export class DataPlacer {
   }
 
   #tryPlacingBitPair(row, col) {
-    this.#tryPlacingBit(row, col); // Right column
-    this.#tryPlacingBit(row, col - 1); // Left column
+    this.#tryPlacingBit(row, col);
+    this.#tryPlacingBit(row, col - 1);
   }
 
   #tryPlacingBit(row, col) {
@@ -50,7 +53,6 @@ export class DataPlacer {
     }
   }
 
-  // Skip timing pattern column during traversal
   #skipTimingPatternIfNeeded(col) {
     return col === TIMING_PATTERN_COLUMN ? col - 1 : col;
   }
@@ -59,12 +61,10 @@ export class DataPlacer {
     return this.dataIndex < this.data.length;
   }
 
-  // Only place in empty cells (null = available)
   #isCellAvailable(row, col) {
     return this.matrix[row][col] === null;
   }
 
-  // Alternate between up and down movement
   #toggleDirection() {
     this.isMovingUp = !this.isMovingUp;
   }
