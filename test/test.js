@@ -13,7 +13,7 @@ try {
   const matrix = generateQRCode("Hello");
   console.log("QR matrix generated successfully");
   console.log("Matrix size:", matrix.length, "x", matrix[0].length);
-  console.log("Sample matrix values:", matrix[0].slice(0, 5));
+  console.log("Sample matrix values:", matrix[0].slice(5, 10));
 } catch (error) {
   console.log("Error:", error.message);
 }
