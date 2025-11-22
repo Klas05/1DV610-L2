@@ -34,5 +34,8 @@
     "./encoder": "./src/encoder.js",
     "./renderer": "./src/renderer.js",
     "./matrix": "./src/matrix.js"
+  },
+  "dependencies": {
+    "reedsolomon": "^1.0.0"
   }
 }
