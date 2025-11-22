@@ -16,7 +16,7 @@ export class QRCodeGenerator {
     const mode = options.mode || "byte";
     const maskPattern = options.maskPattern || 0;
 
-    this.validator.validate(text, { mode, ecLevel: this.errorCorrectionLevel });
+    this.validator.validate(text, { mode, errorCorrectionLevel: this.errorCorrectionLevel });
 
     const encodedData = this.encoder.encode(text, { mode });
     const matrix = new QRMatrix(this.version);
