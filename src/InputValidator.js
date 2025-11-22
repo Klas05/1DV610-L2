@@ -8,11 +8,11 @@ export class InputValidator {
 
   validate(text, options = {}) {
     const mode = options.mode || "byte";
-    const ecLevel = options.ecLevel || this.errorCorrectionLevel;
+    const errorCorrectionLevel = options.errorCorrectionLevel || this.errorCorrectionLevel;
 
     this.#validateString(text);
     this.#validateMode(text, mode);
-    this.#validateLength(text, mode, ecLevel);
+    this.#validateLength(text, mode, errorCorrectionLevel);
   }
 
   #validateString(text) {
@@ -31,14 +31,14 @@ export class InputValidator {
     }
   }
 
-  #validateLength(text, mode, ecLevel) {
-    const maxLen = CAPACITY_V1[mode][ecLevel];
-    const length =
+  #validateLength(text, mode, errorCorrectionLevel) {
+    const maximumCapacity = CAPACITY_V1[mode][errorCorrectionLevel];
+    const actualLength =
       mode === "byte" ? new TextEncoder().encode(text).length : text.length;
 
-    if (length > maxLen) {
+    if (actualLength > maximumCapacity) {
       throw new Error(
-        `Too long for Version 1 (${mode}, EC ${ecLevel}). Max = ${maxLen}, got ${length}.`
+        `Text too long for Version 1 QR code (mode: ${mode}, error correction: ${errorCorrectionLevel}). Maximum: ${maximumCapacity} characters, received: ${actualLength} characters.`
       );
     }
   }
