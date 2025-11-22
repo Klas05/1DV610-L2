@@ -2,21 +2,25 @@ import { PADDING_SIZE } from "./constants.js";
 
 export class QRRenderer {
   renderASCII(matrix) {
-    const size = matrix.length;
-    const lines = [];
+    const matrixSize = matrix.length;
+    const outputLines = [];
 
-    for (let r = -PADDING_SIZE; r < size + PADDING_SIZE; r++) {
-      let line = "";
-      for (let c = -PADDING_SIZE; c < size + PADDING_SIZE; c++) {
-        if (r < 0 || r >= size || c < 0 || c >= size) {
-          line += "  ";
+    for (let row = -PADDING_SIZE; row < matrixSize + PADDING_SIZE; row++) {
+      let currentLine = "";
+      for (let col = -PADDING_SIZE; col < matrixSize + PADDING_SIZE; col++) {
+        if (this.#isOutsideMatrix(row, col, matrixSize)) {
+          currentLine += "  ";
         } else {
-          line += matrix[r][c] === 1 ? "██" : "  ";
+          currentLine += matrix[row][col] === 1 ? "██" : "  ";
         }
       }
-      lines.push(line);
+      outputLines.push(currentLine);
     }
 
-    return lines.join("\n");
+    return outputLines.join("\n");
+  }
+
+  #isOutsideMatrix(row, col, matrixSize) {
+    return row < 0 || row >= matrixSize || col < 0 || col >= matrixSize;
   }
 }
