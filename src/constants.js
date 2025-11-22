@@ -32,6 +32,10 @@ export const FINDER_PATTERN_POSITIONS = [
   [14, 0], // bottom-left
 ];
 export const SEPARATOR_SIZE = 7;
+export const SEPARATOR_POSITION = 7;
+export const FORMAT_INFO_POSITION = 8;
+export const BOTTOM_RIGHT_REGION_START = 13;
+export const MATRIX_MAX_INDEX = MATRIX_SIZE - 1;
 
 // QR Version 1 capacity limits
 export const CAPACITY_V1 = {
