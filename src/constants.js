@@ -43,3 +43,13 @@ export const CAPACITY_V1 = {
   alnum: { L: 25, M: 20, Q: 16, H: 10 },
   byte: { L: 17, M: 14, Q: 11, H: 7 },
 };
+
+// Error correction parameters for Version 1
+export const ERROR_CORRECTION_CODEWORDS = {
+  L: 7,  // 19 data + 7 EC = 26 total
+  M: 10, // 16 data + 10 EC = 26 total
+  Q: 13, // 13 data + 13 EC = 26 total
+  H: 17, // 9 data + 17 EC = 26 total
+};
+
+export const TOTAL_CODEWORDS_V1 = 26;
