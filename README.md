@@ -70,14 +70,6 @@ console.log(asciiArt);
 
 ### API Reference
 
-#### Public Functions (5 available)
-
-1. **`generateQRCode(text, options)`** - Generate QR matrix
-2. **`renderASCIIMatrix(matrix)`** - Render matrix as ASCII
-3. **`validateInput(text, options)`** - Validate input
-4. **`buildDataCodewords(text, options)`** - Build data codewords
-5. **`codewordsToBits(codewords)`** - Convert codewords to bits
-
 ---
 
 #### `generateQRCode(text, options)`
@@ -93,6 +85,12 @@ Generates a QR code matrix for the given text.
 
 **Returns:** A 21x21 matrix representing the QR code (Version 1)
 
+**Example:**
+```javascript
+const matrix = generateQRCode("Hello, World!", { mode: "byte" });
+// Returns a 21x21 matrix array
+```
+
 #### `renderASCIIMatrix(matrix)`
 
 Renders a QR code matrix as ASCII art for console display.
@@ -102,6 +100,14 @@ Renders a QR code matrix as ASCII art for console display.
 - `matrix` (Array): The QR code matrix from `generateQRCode()`
 
 **Returns:** A string containing the ASCII representation
+
+**Example:**
+```javascript
+const matrix = generateQRCode("Test", { mode: "byte" });
+const asciiArt = renderASCIIMatrix(matrix);
+console.log(asciiArt);
+// Outputs ASCII art representation of the QR code
+```
 
 #### `validateInput(text, options)`
 
@@ -114,6 +120,16 @@ Validates the input text and options for QR code generation.
 
 **Throws:** Error if input is invalid or exceeds capacity
 
+**Example:**
+```javascript
+try {
+  validateInput("Hello, World!", { mode: "byte" });
+  console.log("Input is valid!");
+} catch (error) {
+  console.error("Invalid input:", error.message);
+}
+```
+
 #### `buildDataCodewords(text, options)`
 
 Builds the data codewords from the input text using the specified encoding mode.
@@ -125,6 +141,13 @@ Builds the data codewords from the input text using the specified encoding mode.
 
 **Returns:** Array of data codewords (integers)
 
+**Example:**
+```javascript
+const codewords = buildDataCodewords("Hello", { mode: "byte" });
+console.log(codewords);
+// Output: Array of integers representing encoded data
+```
+
 #### `codewordsToBits(codewords)`
 
 Converts an array of codewords to a bit array.
@@ -134,6 +157,14 @@ Converts an array of codewords to a bit array.
 - `codewords` (Array): Array of codeword integers
 
 **Returns:** Array of bits (0s and 1s)
+
+**Example:**
+```javascript
+const codewords = [72, 101, 108, 108, 111]; // Example codewords
+const bits = codewordsToBits(codewords);
+console.log(bits);
+// Output: Array of 0s and 1s representing the bit sequence
+```
 
 ### Supported Features
 
