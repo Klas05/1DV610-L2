@@ -22,9 +22,6 @@ export const COLUMN_PAIR_WIDTH = 2;
 export const BITS_PER_BYTE = 8;
 export const BINARY_BASE = 2;
 
-// Rendering constants
-export const PADDING_SIZE = 4;
-
 // Masking pattern constants
 export const FINDER_PATTERN_POSITIONS = [
   [0, 0], // top-left

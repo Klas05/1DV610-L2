@@ -1,13 +1,13 @@
-import { PADDING_SIZE } from "./constants.js";
-
 export class QRRenderer {
+  static #PADDING_SIZE = 4;
+
   renderASCII(matrix) {
     const matrixSize = matrix.length;
     const outputLines = [];
 
-    for (let row = -PADDING_SIZE; row < matrixSize + PADDING_SIZE; row++) {
+    for (let row = -QRRenderer.#PADDING_SIZE; row < matrixSize + QRRenderer.#PADDING_SIZE; row++) {
       let currentLine = "";
-      for (let col = -PADDING_SIZE; col < matrixSize + PADDING_SIZE; col++) {
+      for (let col = -QRRenderer.#PADDING_SIZE; col < matrixSize + QRRenderer.#PADDING_SIZE; col++) {
         if (this.#isOutsideMatrix(row, col, matrixSize)) {
           currentLine += "  ";
         } else {
