@@ -15,6 +15,11 @@ export function renderASCIIMatrix(matrix) {
   return renderer.renderASCII(matrix);
 }
 
+export function renderSVGMatrix(matrix, moduleSize) {
+  const renderer = new QRRenderer();
+  return renderer.renderSVG(matrix, moduleSize);
+}
+
 export function validateInput(text, options = {}) {
   const validator = new InputValidator();
   return validator.validate(text, options);
