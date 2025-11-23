@@ -1,0 +1,17 @@
+# Test files
+test/
+*.test.js
+
+# Documentation
+docs/
+
+# Git files
+.git
+.gitignore
+
+# Development files
+.vscode
+.idea
+
+# Node modules
+node_modules

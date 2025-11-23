@@ -21,11 +21,7 @@
   "keywords": [
     "qr",
     "qr-code",
-    "generator",
-    "matrix",
-    "ascii",
-    "lnu",
-    "1dv610"
+    "generator"
   ],
   "exports": {
     ".": "./src/index.js",
