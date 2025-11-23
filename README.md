@@ -2,7 +2,9 @@
 
 Repository for the second laboration in LNU's course 1dv610. This repository will contain a npm package for generating qr codes.
 
-Due to time limitation and complexity this package cannot generate scannable qr codes at the moment. The missing component for this is error correction which would require advanced mathematics or use of an external library which was not allowed for this laboration.
+~~Due to time limitation and complexity this package cannot generate scannable qr codes at the moment. The missing component for this is error correction which would require advanced mathematics or use of an external library which was not allowed for this laboration.~~
+
+**Update:** Error correction has now been implemented using the external `reedsolomon` library, making the generated QR codes scannable.
 
 ## Installation
 
@@ -170,6 +172,7 @@ console.log(bits);
 
 - **Version 1 QR codes** (21x21 modules)
 - **Byte mode encoding** for text input
+- **Error correction** using reedsolomon (external library)
 - **Multiple mask patterns** (0-7)
 - **ASCII rendering** for visual output
 - **Input validation** with capacity checking
@@ -180,7 +183,7 @@ console.log(bits);
 
 - Only supports Version 1 QR codes
 - Byte mode encoding only
-- **No error correction implementation** - generated codes are not scannable
+- ~~**No error correction implementation** - generated codes are not scannable~~
 - No support for numeric or alphanumeric modes
 - No automatic version selection
 
@@ -196,18 +199,19 @@ This will run the example in [src/index.js](src/index.js) and display a QR code 
 
 ```
 src/
-├── index.js             # Main entry point and example
-├── QRCodeGenerator.js   # Main QR code generator class
-├── InputValidator.js    # Input validation class
-├── DataEncoder.js       # Data encoding orchestrator
-├── DataStream.js        # Data stream construction
-├── QRMatrix.js          # QR matrix construction
-├── DataPlacer.js        # Data placement in matrix
-├── FormatInfoPlacer.js  # Format information placement
-├── MaskApplier.js       # Mask pattern application
-├── QRRenderer.js        # ASCII rendering
-├── conversionUtils.js   # Bit/byte conversion utilities
-└── constants.js         # Shared constants
+├── index.js                    # Main entry point and example
+├── QRCodeGenerator.js          # Main QR code generator class
+├── InputValidator.js           # Input validation class
+├── DataEncoder.js              # Data encoding orchestrator
+├── DataStream.js               # Data stream construction
+├── ErrorCorrectionEncoder.js   # Error correction encoder
+├── QRMatrix.js                 # QR matrix construction
+├── DataPlacer.js               # Data placement in matrix
+├── FormatInfoPlacer.js         # Format information placement
+├── MaskApplier.js              # Mask pattern application
+├── QRRenderer.js               # ASCII rendering
+├── conversionUtils.js          # Bit/byte conversion utilities
+└── constants.js                # Shared constants
 ```
 
 ## License
@@ -228,7 +232,7 @@ This project was created as a university assignment for LNU's course 1DV610. Whi
 
 ### Potential Improvements
 
-- Implement Reed-Solomon error correction
+- ~~Implement Reed-Solomon error correction~~
 - Add support for higher QR code versions
 - Implement numeric and alphanumeric encoding modes
 - Add automatic version selection based on input length
