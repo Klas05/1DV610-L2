@@ -122,3 +122,20 @@ After completing the clean code refactoring, error correction functionality was 
 
 This addition shows that the clean code principles became part of the development process, not just refactoring tools. Writing new code with these principles in mind from the start was easier than my previous projects.
 
+### SVG Rendering Implementation
+
+When adding SVG rendering to `QRRenderer`, I tried to apply the clean code principles from the start instead of writing messy code and refactoring later. It was interesting to see how much easier it is to write clean code when you're thinking about these principles while coding.
+
+**Chapter 2 (Meaningful Names):** I spent time thinking about method names before writing the code. Names like `#createSVGHeader`, `#createBackground`, `#isBlackModule`, and `#createModuleRect` clearly say what each method does. I also replaced the number 10 with a constant called `#DEFAULT_MODULE_SIZE` so it's clear what that value means and makes it easy to find if I need to change it later.
+
+**Chapter 3 (Functions):** Instead of putting all the SVG generation in one big method, I broke it down into small pieces. The main `renderSVG` method just coordinates everything, while smaller methods like `#isBlackModule`, `#createModuleRect`, and `#calculateTotalSize` each do one simple thing. This made the code much easier to write because I could focus on one small problem at a time. Each little method is simple enough that I'm confident it works correctly.
+
+**Chapter 4 (Comments):** I didn't write a single comment in the SVG code because I didn't need to. The method names like `#createSVGHeader` and `#createSVGFooter` are clear enough on their own. When I read through the code later, the `svgParts` array name makes it obvious that I'm building the SVG in pieces.
+
+**Chapter 5 (Formatting):** I kept the same formatting style as the existing `renderASCII` method blank lines between methods, public methods first, then private helpers underneath. This made the code feel consistent with what was already there, which makes it easier to read when switching between files.
+
+**Chapter 10 (Classes):** I added the SVG rendering to the existing `QRRenderer` class instead of making a new class. Since this class already handles ASCII rendering, it made sense to keep all the rendering logic together. Both rendering methods use the same `#PADDING_SIZE` and work with the same matrix data, so they belong in the same class.
+
+**Consistency with Existing Code:** I tried to follow the same patterns I used in `renderASCII`. Both methods have a similar structure extract helper methods for specific tasks, take a matrix as the main input, and have optional parameters for configuration. This makes the class feel unified.
+
+Writing the SVG feature with clean code principles in mind from the beginning was much smoother than my usual approach of writing first and cleaning up later. The code came out organized naturally, and I didn't have to go back and fix messy parts.

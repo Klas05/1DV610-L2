@@ -28,7 +28,7 @@ npm install
 ### Basic Example
 
 ```javascript
-import { generateQRCode, renderASCIIMatrix } from "@klas05/qr-generator";
+import { generateQRCode, renderASCIIMatrix, renderSVGMatrix } from "@klas05/qr-generator";
 
 // Generate a QR code matrix
 const matrix = generateQRCode("Hello, World!", { mode: "byte" });
@@ -36,6 +36,10 @@ const matrix = generateQRCode("Hello, World!", { mode: "byte" });
 // Render as ASCII art
 const asciiArt = renderASCIIMatrix(matrix);
 console.log(asciiArt);
+
+// Render as SVG
+const svg = renderSVGMatrix(matrix);
+// Use in web applications or save to file
 ```
 
 ### Advanced Usage
@@ -47,6 +51,7 @@ import {
   buildDataCodewords,
   codewordsToBits,
   renderASCIIMatrix,
+  renderSVGMatrix,
 } from "@klas05/qr-generator";
 
 // Step-by-step QR code generation
@@ -65,9 +70,12 @@ const bits = codewordsToBits(codewords);
 // 4. Generate final matrix (you can also use generateQRCode for steps 1-4)
 const matrix = generateQRCode(text, options);
 
-// 5. Render as ASCII
+// 5. Render as ASCII or SVG
 const asciiArt = renderASCIIMatrix(matrix);
 console.log(asciiArt);
+
+const svg = renderSVGMatrix(matrix, 10); // 10px module size
+document.getElementById("qr-container").innerHTML = svg;
 ```
 
 ### API Reference
@@ -109,6 +117,34 @@ const matrix = generateQRCode("Test", { mode: "byte" });
 const asciiArt = renderASCIIMatrix(matrix);
 console.log(asciiArt);
 // Outputs ASCII art representation of the QR code
+```
+
+#### `renderSVGMatrix(matrix, moduleSize)`
+
+Renders a QR code matrix as an SVG image for web applications.
+
+**Parameters:**
+
+- `matrix` (Array): The QR code matrix from `generateQRCode()`
+- `moduleSize` (number, optional): Size of each QR module in pixels (default: 10)
+
+**Returns:** A string containing the SVG markup
+
+**Example:**
+```javascript
+const matrix = generateQRCode("Test", { mode: "byte" });
+
+// Default module size (10px)
+const svg = renderSVGMatrix(matrix);
+
+// Custom module size for larger QR code
+const largeSVG = renderSVGMatrix(matrix, 20);
+
+// Use in web page
+document.getElementById("qr-container").innerHTML = svg;
+
+// Or save to file
+fs.writeFileSync("qrcode.svg", svg);
 ```
 
 #### `validateInput(text, options)`
@@ -174,9 +210,10 @@ console.log(bits);
 - **Byte mode encoding** for text input
 - **Error correction** using reedsolomon (external library)
 - **Multiple mask patterns** (0-7)
-- **ASCII rendering** for visual output
+- **ASCII rendering** for console output
+- **SVG rendering** for web applications with customizable module size
 - **Input validation** with capacity checking
-- **Functional API** with 5 public functions
+- **Functional API** with 6 public functions
 - **Modular design** for step-by-step processing
 
 ### Limitations
@@ -209,7 +246,7 @@ src/
 ├── DataPlacer.js               # Data placement in matrix
 ├── FormatInfoPlacer.js         # Format information placement
 ├── MaskApplier.js              # Mask pattern application
-├── QRRenderer.js               # ASCII rendering
+├── QRRenderer.js               # ASCII and SVG rendering
 ├── conversionUtils.js          # Bit/byte conversion utilities
 └── constants.js                # Shared constants
 ```
@@ -233,11 +270,12 @@ This project was created as a university assignment for LNU's course 1DV610. Whi
 ### Potential Improvements
 
 - ~~Implement Reed-Solomon error correction~~
+- ~~Add image output formats (PNG, SVG)~~
 - Add support for higher QR code versions
 - Implement numeric and alphanumeric encoding modes
 - Add automatic version selection based on input length
 - Create a proper test suite
-- Add image output formats (PNG, SVG)
+- Add PNG output format
 
 ## Acknowledgments
 
