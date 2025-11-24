@@ -1,6 +1,6 @@
 {
   "name": "@klas05/l2-qr-code-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A QR code generator library created for LNU course 1DV610. Generates QR code matrices with ASCII rendering support.",
   "homepage": "https://github.com/Klas05/1DV610-L2#readme",
   "bugs": {
