@@ -9,9 +9,8 @@ Repository for the second laboration in LNU's course 1dv610. This repository wil
 ## Installation
 
 ```bash
-npm install @klas05/qr-generator
+npm install @klas05/l2-qr-code-generator
 ```
-Not yet published as a package since it's functionality is not yet reached the desired level.
 
 ### Development Installation
 
@@ -28,7 +27,7 @@ npm install
 ### Basic Example
 
 ```javascript
-import { generateQRCode, renderASCIIMatrix, renderSVGMatrix } from "@klas05/qr-generator";
+import { generateQRCode, renderASCIIMatrix, renderSVGMatrix } from "@klas05/l2-qr-code-generator";
 
 // Generate a QR code matrix
 const matrix = generateQRCode("Hello, World!", { mode: "byte" });
