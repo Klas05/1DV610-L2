@@ -5,6 +5,7 @@ import {
   buildDataCodewords,
   codewordsToBits,
 } from "../src/index.js";
+import { ErrorCorrectionEncoder } from "../src/ErrorCorrectionEncoder.js";
 
 console.log("=== QR Code Generator Manual Tests ===\n");
 
@@ -144,5 +145,184 @@ try {
 } catch (error) {
   console.log("End-to-end test failed:", error.message);
 }
+
+console.log("\n=== Reed-Solomon Error Correction Tests ===\n");
+
+console.log("9. Testing basic error correction encoding:");
+try {
+  const encoder = new ErrorCorrectionEncoder();
+  const dataCodewords = [72, 101, 108, 108, 111]; // "Hello" in ASCII
+  const ecCount = 7; // Error correction codewords for Level L
+  const result = encoder.encode(dataCodewords, ecCount);
+
+  console.log("✓ Error correction encoding successful");
+  console.log(`  Input data length: ${dataCodewords.length}`);
+  console.log(`  Error correction count: ${ecCount}`);
+  console.log(`  Output length: ${result.length} (expected: ${dataCodewords.length + ecCount})`);
+  console.log(`  Data portion preserved: ${JSON.stringify(result.slice(0, dataCodewords.length)) === JSON.stringify(dataCodewords)}`);
+  console.log(`  Error correction codewords: [${result.slice(dataCodewords.length).join(", ")}]`);
+} catch (error) {
+  console.log("✗ Error:", error.message);
+}
+console.log("");
+
+console.log("10. Testing error correction with different EC counts:");
+const ecLevels = [
+  { level: "L", count: 7 },
+  { level: "M", count: 10 },
+  { level: "Q", count: 13 },
+  { level: "H", count: 17 }
+];
+
+ecLevels.forEach(({ level, count }) => {
+  try {
+    const encoder = new ErrorCorrectionEncoder();
+    const dataCodewords = [84, 101, 115, 116]; // "Test"
+    const result = encoder.encode(dataCodewords, count);
+
+    console.log(`✓ Level ${level} (${count} EC codewords): output length ${result.length}`);
+  } catch (error) {
+    console.log(`✗ Level ${level} failed:`, error.message);
+  }
+});
+console.log("");
+
+console.log("11. Testing validation - invalid inputs:");
+const invalidTests = [
+  {
+    name: "non-array data",
+    data: "not an array",
+    ecCount: 7,
+    expectedError: "Data codewords must be an array"
+  },
+  {
+    name: "empty array",
+    data: [],
+    ecCount: 7,
+    expectedError: "Data codewords array cannot be empty"
+  },
+  {
+    name: "zero error correction count",
+    data: [72, 101],
+    ecCount: 0,
+    expectedError: "Error correction count must be a positive integer"
+  },
+  {
+    name: "negative error correction count",
+    data: [72, 101],
+    ecCount: -5,
+    expectedError: "Error correction count must be a positive integer"
+  },
+  {
+    name: "non-integer error correction count",
+    data: [72, 101],
+    ecCount: 7.5,
+    expectedError: "Error correction count must be a positive integer"
+  },
+  {
+    name: "codeword value too large",
+    data: [72, 256, 101],
+    ecCount: 7,
+    expectedError: "Invalid codeword at index 1: 256"
+  },
+  {
+    name: "negative codeword value",
+    data: [72, -1, 101],
+    ecCount: 7,
+    expectedError: "Invalid codeword at index 1: -1"
+  },
+  {
+    name: "non-integer codeword",
+    data: [72, 101.5, 101],
+    ecCount: 7,
+    expectedError: "Invalid codeword at index 1: 101.5"
+  }
+];
+
+invalidTests.forEach((test) => {
+  try {
+    const encoder = new ErrorCorrectionEncoder();
+    encoder.encode(test.data, test.ecCount);
+    console.log(`✗ ${test.name}: Should have thrown an error`);
+  } catch (error) {
+    if (error.message.includes(test.expectedError)) {
+      console.log(`✓ ${test.name}: Correctly rejected`);
+    } else {
+      console.log(`✗ ${test.name}: Wrong error message`);
+      console.log(`  Expected: ${test.expectedError}`);
+      console.log(`  Got: ${error.message}`);
+    }
+  }
+});
+console.log("");
+
+console.log("12. Testing EC codewords are actually generated (not zeros):");
+try {
+  const encoder = new ErrorCorrectionEncoder();
+  const dataCodewords = [72, 101, 108, 108, 111]; // "Hello"
+  const result = encoder.encode(dataCodewords, 7);
+  const ecCodewords = result.slice(dataCodewords.length);
+
+  const hasNonZero = ecCodewords.some(codeword => codeword !== 0);
+  const allValid = ecCodewords.every(codeword =>
+    Number.isInteger(codeword) && codeword >= 0 && codeword <= 255
+  );
+
+  console.log(`✓ EC codewords generated: ${hasNonZero ? "Yes" : "No (all zeros!)"}`);
+  console.log(`✓ All EC codewords valid bytes (0-255): ${allValid}`);
+  console.log(`  EC codewords: [${ecCodewords.join(", ")}]`);
+} catch (error) {
+  console.log("✗ Error:", error.message);
+}
+console.log("");
+
+console.log("13. Testing integration with buildDataCodewords:");
+try {
+  const text = "QR";
+  const codewords = buildDataCodewords(text, {
+    mode: "byte",
+    errorCorrectionLevel: "L"
+  });
+
+  console.log("✓ Integration test successful");
+  console.log(`  Input text: "${text}"`);
+  console.log(`  Total codewords (data + EC): ${codewords.length}`);
+  console.log(`  First few codewords: [${codewords.slice(0, 5).join(", ")}]`);
+  console.log(`  Last few codewords (EC): [${codewords.slice(-7).join(", ")}]`);
+} catch (error) {
+  console.log("✗ Error:", error.message);
+}
+console.log("");
+
+console.log("14. Testing deterministic encoding (same input = same output):");
+try {
+  const encoder = new ErrorCorrectionEncoder();
+  const dataCodewords = [84, 101, 115, 116]; // "Test"
+  const result1 = encoder.encode(dataCodewords, 7);
+  const result2 = encoder.encode(dataCodewords, 7);
+
+  const identical = JSON.stringify(result1) === JSON.stringify(result2);
+  console.log(`✓ Encoding is deterministic: ${identical}`);
+  console.log(`  First encoding: [${result1.join(", ")}]`);
+  console.log(`  Second encoding: [${result2.join(", ")}]`);
+} catch (error) {
+  console.log("✗ Error:", error.message);
+}
+console.log("");
+
+console.log("15. Testing with maximum valid codeword values:");
+try {
+  const encoder = new ErrorCorrectionEncoder();
+  const dataCodewords = [0, 127, 255]; // Min, mid, max values
+  const result = encoder.encode(dataCodewords, 5);
+
+  console.log("✓ Edge value encoding successful");
+  console.log(`  Input: [${dataCodewords.join(", ")}]`);
+  console.log(`  Output length: ${result.length}`);
+  console.log(`  Data preserved: ${JSON.stringify(result.slice(0, 3)) === JSON.stringify(dataCodewords)}`);
+} catch (error) {
+  console.log("✗ Error:", error.message);
+}
+console.log("");
 
 console.log("\n=== Manual Tests Complete ===");
