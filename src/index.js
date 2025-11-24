@@ -1,8 +1,8 @@
-import { QRCodeGenerator } from "./QRCodeGenerator.js";
-import { InputValidator } from "./InputValidator.js";
-import { DataEncoder } from "./DataEncoder.js";
-import { QRRenderer } from "./QRRenderer.js";
-import { codewordsToBits } from "./conversionUtils.js";
+import { QRCodeGenerator } from "@klas05/qr-generator/src/QRCodeGenerator.js";
+import { InputValidator } from "@klas05/qr-generator/src/InputValidator.js";
+import { DataEncoder } from "@klas05/qr-generator/src/DataEncoder.js";
+import { QRRenderer } from "@klas05/qr-generator/src/QRRenderer.js";
+import { codewordsToBits } from "@klas05/qr-generator/src/conversionUtils.js";
 
 // Main high-level API (backwards compatibility)
 export function generateQRCode(text, options = {}) {

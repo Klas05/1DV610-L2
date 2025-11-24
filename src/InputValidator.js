@@ -1,4 +1,4 @@
-import { CAPACITY_V1 } from "./constants.js";
+import { CAPACITY_V1 } from "@klas05/qr-generator/src/constants.js";
 
 export class InputValidator {
   constructor(version = 1, errorCorrectionLevel = "L") {

@@ -1,7 +1,7 @@
-import { InputValidator } from "./InputValidator.js";
-import { DataEncoder } from "./DataEncoder.js";
-import { QRMatrix } from "./QRMatrix.js";
-import { QRRenderer } from "./QRRenderer.js";
+import { InputValidator } from "@klas05/qr-generator/src/InputValidator.js";
+import { DataEncoder } from "@klas05/qr-generator/src/DataEncoder.js";
+import { QRMatrix } from "@klas05/qr-generator/src/QRMatrix.js";
+import { QRRenderer } from "@klas05/qr-generator/src/QRRenderer.js";
 
 export class QRCodeGenerator {
   constructor(version = 1, errorCorrectionLevel = "L") {

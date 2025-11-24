@@ -4,7 +4,7 @@ import {
   validateInput,
   buildDataCodewords,
   codewordsToBits,
-} from "../src/index.js";
+} from "@klas05/qr-generator/src/index.js";
 
 console.log("=== QR Code Generator Manual Tests ===\n");
 
