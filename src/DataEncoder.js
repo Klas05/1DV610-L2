@@ -1,6 +1,6 @@
-import { DataStream } from "@klas05/qr-generator/src/DataStream.js";
-import { ErrorCorrectionEncoder } from "@klas05/qr-generator/src/ErrorCorrectionEncoder.js";
-import { ERROR_CORRECTION_CODEWORDS } from "@klas05/qr-generator/src/constants.js";
+import { DataStream } from "./DataStream.js";
+import { ErrorCorrectionEncoder } from "./ErrorCorrectionEncoder.js";
+import { ERROR_CORRECTION_CODEWORDS } from "./constants.js";
 
 export class DataEncoder {
   #errorCorrectionEncoder;

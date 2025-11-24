@@ -1,4 +1,4 @@
-import { BITS_PER_BYTE, BINARY_BASE } from "@klas05/qr-generator/src/constants.js";
+import { BITS_PER_BYTE, BINARY_BASE } from "./constants.js";
 
 export function stringToBytes(text) {
   const encoder = new TextEncoder();

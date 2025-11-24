@@ -1,4 +1,4 @@
-import { CAPACITY_V1 } from "@klas05/qr-generator/src/constants.js";
+import { CAPACITY_V1 } from "./constants.js";
 
 export class InputValidator {
   constructor(version = 1, errorCorrectionLevel = "L") {
@@ -8,7 +8,8 @@ export class InputValidator {
 
   validate(text, options = {}) {
     const mode = options.mode || "byte";
-    const errorCorrectionLevel = options.errorCorrectionLevel || this.errorCorrectionLevel;
+    const errorCorrectionLevel =
+      options.errorCorrectionLevel || this.errorCorrectionLevel;
 
     this.#validateString(text);
     this.#validateMode(text, mode);
